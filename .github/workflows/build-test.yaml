@@ -26,7 +26,7 @@ jobs:
         run: mvn -B package --file pom.xml
 
       - name: Build and push
-        uses: mr-smithers-excellent/docker-build-push@v4
+        uses: mr-smithers-excellent/docker-build-push@v5.6
         with:
           registry: docker.io
           image: dockerpraveen123/java-app-github-actions
