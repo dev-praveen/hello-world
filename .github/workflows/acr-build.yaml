@@ -3,7 +3,7 @@ name: Push docker image to ACR
 on:
   push:
     branches:
-      - main
+      - master
 
 env:
   AZURE_REGISTRY: devaksclusterregistry.azurecr.io
