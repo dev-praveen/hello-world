@@ -1,4 +1,4 @@
-name: Push docker image to ACR
+name: ACR Build and Push
 
 on:
   push:
@@ -6,35 +6,35 @@ on:
       - master
 
 env:
-  AZURE_REGISTRY: devaksclusterregistry.azurecr.io
-  IMAGE_TAG: ${{ env.TAG_NAME }}
+  ACR_REGISTRY: devaksclusterregistry.azurecr.io
 
 jobs:
-  build-and-push:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up JDK
+      - name: Set up Java 11
         uses: actions/setup-java@v1
         with:
           java-version: 11
 
-      - name: Build and test code
+      - name: Build and Test
         run: ./mvnw clean package
-
-      - name: Build Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: true
-          tags: ${{ env.AZURE_REGISTRY }}/spring-boot-app:${{ env.IMAGE_TAG }}
 
       - name: Login to Azure Container Registry
         uses: azure/docker-login@v1
         with:
-          loginServer: ${{ env.AZURE_REGISTRY }}
+          loginServer: ${{ env.ACR_REGISTRY }}
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build Docker image
+        run: |
+          docker build . -t ${{ env.ACR_REGISTRY }}/hello-world-app:v1.0
+
+      - name: Push Docker image
+        run: |
+          docker push ${{ env.ACR_REGISTRY }}/hello-world-app:v1.0
