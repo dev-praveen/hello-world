@@ -1,4 +1,4 @@
-name: ACR Build and Push
+name: ACR build and push
 
 on:
   push:
